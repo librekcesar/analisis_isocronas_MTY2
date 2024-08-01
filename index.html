@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="leaflet-search-master/leaflet-search-master/src/leaflet-search.css" />
+    <script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
+    <script src="leaflet-search-master/leaflet-search-master/src/leaflet-search.js"></script>
+    <script type="text/javascript" src="mty_zonasv66_copia2.js"></script>
+    <script type="text/javascript" src="mty_zonasv66_copia3.js"></script>
+
+    <style>
+        #map { 
+            width: 100%;
+            height: 900px;
+            box-shadow: 5px 5px 5px #888; 
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        var map = L.map("map").setView([25.7094, -100.2892], 11);
+        L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 18
+        }).addTo(map);
+
+        function getColor(escenario2) {
+            switch (escenario2) {
+                case 'Zona_A': return '#4af210';
+                case 'Zona_B': return '#EC3D28';
+                default: return '#00FF00';
+            }
+        }
+
+        function style(feature) {
+            return {
+                fillColor: getColor(feature.properties.escenario2),
+                weight: 1,
+                opacity: 1,
+                color: 'black',
+                dashArray: '2',
+                fillOpacity: 0.5
+            };
+        }
+
+        function onEachFeature(feature, layer) {
+            if (feature.properties) {
+                layer.bindPopup('<p> Zonas: ' + feature.properties.escenario2 + '</p><p>Tiempo de traslado desde centroide: ' + feature.properties.tiempo2 + '</p><p>Zonificación: ' + feature.properties.zonificacion + '</p>');
+            }
+        }
+
+        var layerGroup = L.geoJSON(mty2, {
+            style: style,
+            onEachFeature: onEachFeature
+        });
+
+        function getColor2(escenario3) {
+            switch (escenario3) {
+                case 'Zona_A': return '#069f30';
+                case 'Zona_B': return '#9f1406';
+                default: return '#00FF00';
+            }
+        }
+
+        function style2(feature) {
+            return {
+                fillColor: getColor2(feature.properties.escenario3),
+                weight: 1,
+                opacity: 1,
+                color: 'black',
+                dashArray: '2',
+                fillOpacity: 0.5
+            };
+        }
+
+        function onEachFeature2(feature, layer) {
+            if (feature.properties) {
+                layer.bindPopup('<p> Zonas: ' + feature.properties.escenario3 + '</p><p>Tiempo de traslado desde centroide: ' + feature.properties.tiempo3 + '</p><p>Zonificación: ' + feature.properties.zonificacion + '</p>');
+            }
+        }
+
+        var layerGroup2 = L.geoJSON(mty3, {
+            style: style2,
+            onEachFeature: onEachFeature2
+        });
+
+        var baseMaps = {
+            "Mapa Base": map
+        };
+
+        var overlayMaps = {
+            "Escenario 2. Isócronas 20 a 40 min": layerGroup,
+            "Escenario 2. Isócronas 25 a 50 min": layerGroup2
+        };
+
+        L.control.layers(baseMaps, overlayMaps, {
+            collapsed: false
+        }).addTo(map);
+
+        layerGroup.addTo(map);
+    </script>
+</body>
+</html>
